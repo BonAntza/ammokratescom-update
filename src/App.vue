@@ -1,16 +1,22 @@
 <template>
-  <img alt="Vue logo" src="./assets/logo.png">
-  <HelloWorld msg="Welcome to Your Vue.js App"/>
-	<div>I'm testing Jenkins' auto-build.</div>
+  <header>
+    Header
+  </header>
+  <div id="ammokrates-logo">
+    AMMOLOGO
+  </div>
+  <Content>
+    <AlbumRelease />
+  </Content>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+import AlbumRelease from './components/AlbumRelease.vue'
 
 export default {
   name: 'App',
   components: {
-    HelloWorld
+    AlbumRelease
   }
 }
 </script>
