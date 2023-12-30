@@ -50,7 +50,7 @@ header {
   width: 100%;
 }
 
-content {
+Content {
   background: rgba(0, 0, 0, 0.7);
   border-radius: 1em;
   height: 40em;
@@ -58,6 +58,7 @@ content {
   max-width: 80em;
   display: flex;
   backdrop-filter: blur(10px);
+  padding: 2em;
 }
 
 #ammokrates-logo {
