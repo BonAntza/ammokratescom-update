@@ -1,6 +1,6 @@
 <template>
   <div class="album-cover">
-    Album cover image
+    <!-- Album cover image -->
   </div>
 </template>
 
