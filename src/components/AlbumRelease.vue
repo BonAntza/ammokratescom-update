@@ -25,25 +25,26 @@
 export default {
   name: 'AlbumRelease',
   props: {
-    release: String
+    release: Number
   },
   computed: {
     releaseData() {
       let albumInfo = {};
       switch (this.release) {
-        case 'ammokratic-oath':
+        case 0:
           albumInfo = {
             title: 'Ammokratic Oath',
             year: 2022,
             songList: [
               'Ammokratic Oath'
             ],
+            imgId: 'ammokratic-oath',
             linkData: {
               'ammokratic-oath': 'https://www.youtube.com/watch?v=ink0Dp16sEw'
             }
           };
           break;
-        case 'legends':
+        case 1:
           albumInfo = {
             title: 'Legends',
             year: 2021,
@@ -52,9 +53,10 @@ export default {
               'Legends',
               'Fairway'
             ],
+            imgId: 'legends',
           };
           break;
-        case 'echoes-between-the-stars':
+        case 2:
           albumInfo = {
             title: 'Echoes Between the Stars',
             year: 2020,
@@ -64,16 +66,12 @@ export default {
               'Dawnbreaker',
               'The Last Fleet'
             ],
+            imgId: 'echoes-between-the-stars',
           };
           break;
         default:
-          albumInfo = {
-            title: '',
-            imgId: '',
-          };
           break;
       }
-      albumInfo.imgId = this.release;
       return albumInfo;
     }
   },
@@ -94,9 +92,11 @@ a:hover {
 }
 
 h2 {
-  padding-bottom: 0.6em;
-  border-bottom: white solid 0.2em;
-  margin: 0 0 1em 0;
+  padding-bottom: 0.7vh;
+  border-bottom: white solid 0.2vh;
+  margin: 0 0 1vh 0;
+  font-size: 1.8vh;
+  font-weight: normal;
 }
 
 .release-wrapper {
@@ -107,8 +107,9 @@ h2 {
 }
 
 .info-section {
-  width: 50%;
-  margin: 1em;
+  width: 33vh;
+  margin: 1vh;
+  font-size: 1.3vh;
 }
 
 .album-info {
