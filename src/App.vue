@@ -79,15 +79,6 @@ export default {
     AlbumRelease,
   },
   mounted() {
-    const parentWidth = this.$refs.carousel.offsetWidth;
-    const reduction = 2 * 2 * 2 * parseFloat(getComputedStyle(document.body).fontSize);
-    const adjustedWidth = (parentWidth - reduction) / 28.6;
-
-    if (this.$refs.slide && this.$refs.slide.length) {
-      this.$refs.slide.forEach((slideElement) => {
-        slideElement.style.width = `${adjustedWidth}%`;
-      });
-    }
   },
   methods: {
     clickSomeLink(some) {
@@ -423,10 +414,42 @@ footer {
   font-size: 1.2vh;
 }
 
-/* @media screen and (max-width: 1920px) {
-  header {
-    width: 200%;
-  } */
-/* } */
+@media screen and (max-width: 800px) {
+  #page-content {
+    width: 100%;
+  }
+}
+
+@media screen and (max-width: 705px) {
+  img.info-section {
+    width: 26vh !important;
+  }
+}
+
+@media screen and (max-width: 630px) {
+  img.info-section {
+    width: 22vh !important;
+  }
+}
+
+@media screen and (max-width: 590px) {
+  #content {
+    height: 27vh;
+  }
+  img.info-section {
+    width: 18vh !important;
+  }
+  div.info-section {
+    width: 24vh !important;
+  }
+  .release {
+    padding-right: 10vh;
+  }
+}
+@media screen and (max-width: 545px) {
+  div.info-section {
+    width: 20vh !important;
+  }
+}
 
 </style>

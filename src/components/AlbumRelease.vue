@@ -93,17 +93,13 @@ a:hover {
 
 h2 {
   padding-bottom: 0.7vh;
-  border-bottom: white solid 0.2vh;
   margin: 0 0 1vh 0;
   font-size: 1.8vh;
   font-weight: normal;
 }
 
 .release-wrapper {
-  height: 100%;
-  width: 100%;
   color: white;
-  overflow: hidden;
 }
 
 .info-section {
