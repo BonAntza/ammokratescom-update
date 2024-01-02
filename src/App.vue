@@ -419,7 +419,7 @@ footer {
   #ammokrates-logo img {
   }
   footer {
-    height: 25%;
+    height: 21%;
     justify-content: flex-start;
   }
   #ammokrates-logo {
