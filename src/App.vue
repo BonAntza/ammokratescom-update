@@ -410,17 +410,20 @@ footer {
 }
 
 @media screen and (max-width: 800px) {
-  #page-content {
+  #content-wrapper {
     width: 95%;
   }
 }
 
 @media screen and (max-width: 590px) {
   #ammokrates-logo img {
-    height: 80%;
   }
   footer {
-    height: 30%;
+    height: 25%;
+    justify-content: flex-start;
+  }
+  #ammokrates-logo {
+    height: 12%;
   }
 }
 @media screen and (max-width: 545px) {
