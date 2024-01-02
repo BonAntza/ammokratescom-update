@@ -112,6 +112,10 @@ h2 {
   font-size: 1.3vh;
 }
 
+img.info-section {
+  box-shadow: 0 0 0.8em #00000096;
+}
+
 .album-info {
   display: flex;
 }

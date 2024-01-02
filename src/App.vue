@@ -1,12 +1,6 @@
 <template>
   <header>
     <img id="header-graphic" src="../public/images/header-bar.png">
-    <div id="some-icons">
-      <font-awesome-icon @click="clickSomeLink('spotify')" class="slide-change-icon" :icon="['fab', 'spotify']" />
-      <font-awesome-icon @click="clickSomeLink('youtube')" class="slide-change-icon" :icon="['fab', 'youtube']" />
-      <font-awesome-icon @click="clickSomeLink('facebook')" class="slide-change-icon" :icon="['fab', 'square-facebook']" />
-      <font-awesome-icon @click="clickSomeLink('instagram')" class="slide-change-icon" :icon="['fab', 'square-instagram']" />
-    </div>
   </header>
   <div id="ammokrates-logo">
     <img src="../public/images/ammokrates-logo.png" alt="Ammokrates Logo">
@@ -17,9 +11,9 @@
     </div>
     <div id="content-wrapper">
       <font-awesome-icon class="slide-change-icon" :icon="['fas', 'caret-left']" @click="handleCaretClick('left')" />
-      <div ref="carousel" id='content'>
+      <div id='content'>
         <div id="carousel-wrapper">
-          <div id='carousel'>
+          <div id='carousel' ref="carousel" >
             <div ref="slide" class="release" v-for="(release, index) in albumReleases" :key="index">
               <AlbumRelease :release="index" />
             </div>
@@ -40,27 +34,47 @@
     </div>
   </div>
   <footer>
+    <div id="some-icons">
+      <font-awesome-icon @click="clickSomeLink('spotify')" class="slide-change-icon" :icon="['fab', 'spotify']" />
+      <font-awesome-icon @click="clickSomeLink('youtube')" class="slide-change-icon" :icon="['fab', 'youtube']" />
+      <font-awesome-icon @click="clickSomeLink('facebook')" class="slide-change-icon" :icon="['fab', 'square-facebook']" />
+      <font-awesome-icon @click="clickSomeLink('instagram')" class="slide-change-icon" :icon="['fab', 'square-instagram']" />
+    </div>
     <div id="footer-text">
-      All copyrights by Ammokrates, web design by Bon Antza SpecOps. Web page icons by <a id="font-awesome-link" href="https://fontawesome.com/license" target="_blank">fontawesome</a>.
+      All copyrights by Ammokrates. Web design by Bon Antza SpecOps. Web page icons by <a id="font-awesome-link" href="https://fontawesome.com/license" target="_blank">fontawesome</a>.
     </div>
   </footer>
 </template>
 
 <script>
+import { ref, onMounted, onUnmounted } from 'vue';
 import AlbumRelease from './components/AlbumRelease.vue'
+
+/**
+ * Turns the carousel from a given slide to another.
+ * @param {number} fromSlide - Starting slide.
+ * @param {number} toSlide - Target slide.
+ */
+function turnCarousel(fromSlide, toSlide, setSelectedSlide) {
+  const releases = document.querySelectorAll('.release');
+  const carousel = document.getElementById('carousel');
+
+  if (releases.length > 0 && carousel) {
+    const releaseWidth = releases[0].getBoundingClientRect().width;
+    const turns = toSlide - fromSlide;
+    const turnsWidth = turns * releaseWidth;
+    const currentLeft = parseInt(carousel.style.left, 10) || 0;
+    const newLeft = currentLeft - turnsWidth;
+
+    setTimeout(() => {
+      carousel.style.left = `${newLeft}px`;
+      setSelectedSlide(toSlide);
+    }, 10);
+  }
+}
 
 export default {
   name: 'App',
-  data() {
-    return {
-      selectedSlide: 0,
-      albumReleases: [
-        'ammokratic-oath',
-        'legends',
-        'echoes-between-the-stars',
-      ],
-    }
-  },
   components: {
     AlbumRelease,
   },
@@ -101,7 +115,7 @@ export default {
      * @param {number} index - The index the user has clicked on.
      */
     handleButtonClick(index) {
-      this.turnCarousel(this.selectedSlide, index);
+      this.turnCarouselWrapper(this.selectedSlide, index);
     },
     /**
      * Handles caret button click on the carousel (left or right).
@@ -130,35 +144,81 @@ export default {
 
       // Carousel turn is possible.     
       if (nextSlide !== undefined) {
-        this.turnCarousel(currentSlideIndex, nextSlide);
+        this.turnCarouselWrapper(currentSlideIndex, nextSlide);
       }
     },
-    /**
-     * Turns the carousel from a given slide to another.
-     * @param {number} fromSlide - Starting slide.
-     * @param {number} toSlide - Target slide.
-     */
-    turnCarousel(fromSlide, toSlide) {
-      const releases = document.querySelectorAll('.release');
-
-      if (releases.length > 0) {
-        const releaseWidth = releases[0].getBoundingClientRect().width;
-        const turns = toSlide - fromSlide;
-        const turnsWidth = turns * releaseWidth;
-
-        const carousel = document.getElementById('carousel');
-        if (carousel) {
-          const currentLeft = parseInt(carousel.style.left, 10) || 0;
-          const newLeft = currentLeft - turnsWidth;
-
-          setTimeout(() => {
-            carousel.style.left = `${newLeft}px`;
-            this.selectedSlide = toSlide;
-          }, 10);
-        }
-      }
+    turnCarouselWrapper(fromSlide, toSlide) {
+      turnCarousel(fromSlide, toSlide, (newSlide) => { this.selectedSlide = newSlide});
     }
   },
+  setup() {
+    const albumReleases = ref([
+      'ammokratic-oath',
+      'legends',
+      'echoes-between-the-stars',
+    ]);
+    const selectedSlide = ref(0);
+    const carousel = ref(null);
+    let startX, startLeft, endX;
+
+    const startDrag = (event) => {
+      event = event.type.includes('mouse') ? event : event.touches[0];
+      startX = event.clientX;
+      startLeft = parseInt(carousel.value.style.left, 10) || 0;
+
+      document.addEventListener('mousemove', onDrag);
+      document.addEventListener('mouseup', stopDrag);
+      document.addEventListener('touchmove', onDrag);
+      document.addEventListener('touchend', stopDrag);
+    };
+
+    const onDrag = (event) => {
+      event.preventDefault();
+      event = event.type.includes('mouse') ? event : event.touches[0];
+      endX = event.clientX;
+    };
+
+    const stopDrag = () => {
+      document.removeEventListener('mousemove', onDrag);
+      document.removeEventListener('mouseup', stopDrag);
+      document.removeEventListener('touchmove', onDrag);
+      document.removeEventListener('touchend', stopDrag);
+
+      const dragLeft = endX < startX;
+      const slidesCount = albumReleases.value.length;
+      let newSlide;
+
+      if (dragLeft && selectedSlide.value < slidesCount - 1) {
+        // Dragged left, move to next slide
+        newSlide = selectedSlide.value + 1;
+      } else if (!dragLeft && selectedSlide.value > 0) {
+        // Dragged right, move to previous slide
+        newSlide = selectedSlide.value - 1;
+      }
+
+      if (newSlide !== undefined) {
+        turnCarousel(selectedSlide.value, newSlide, (updatedSlide) => {
+          selectedSlide.value = updatedSlide;
+        });
+      }
+    };
+
+    onMounted(() => {
+      if (carousel.value) {
+        carousel.value.addEventListener('mousedown', startDrag);
+        carousel.value.addEventListener('touchstart', startDrag);
+      }
+    });
+
+    onUnmounted(() => {
+      if (carousel.value) {
+        carousel.value.removeEventListener('mousedown', startDrag);
+        carousel.value.removeEventListener('touchstart', startDrag);
+      }
+    });
+
+    return { carousel, albumReleases, selectedSlide };
+  }
 }
 </script>
 
@@ -211,16 +271,15 @@ header {
 }
 
 #some-icons {
-  position: absolute;
-  right: 70.1vh;
-  top: 3vh;
+  position: relative;
+  bottom: 0.8vh;
 }
 
 #some-icons svg {
   color: #ffe5ca;
   font-size: 1.8vh;
   margin: 0 0.7vh;
-  opacity: 0.7;
+  opacity: 0.9;
 }
 
 #some-icons svg:hover {
@@ -230,12 +289,13 @@ header {
 footer {
   font-family: var(--main-font);
   width: 100%;
-  height: 3%;
+  height: 5%;
   display: flex;
   justify-content: center;
   align-items: center;
   opacity: 0.6;
   backdrop-filter: blur(0.5vh);
+  flex-direction: column;
 }
 
 #footer-text {
@@ -308,7 +368,7 @@ footer {
 
 .slide-change-icon {
   font-size: 6vh;
-  margin: 0 0.1em;
+  margin: 0 0.1vh;
 }
 
 #carousel {
@@ -332,6 +392,10 @@ footer {
 
 .release:not(:last-child) {
   padding-right: 3vh;
+}
+
+.release {
+  user-select: none;
 }
 
 #band-info {
