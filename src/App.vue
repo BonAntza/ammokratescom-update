@@ -12,11 +12,9 @@
     <div id="content-wrapper">
       <font-awesome-icon class="slide-change-icon" :icon="['fas', 'caret-left']" @click="handleCaretClick('left')" />
       <div id='content'>
-        <div id="carousel-wrapper">
-          <div id='carousel' ref="carousel" >
-            <div ref="slide" class="release" v-for="(release, index) in albumReleases" :key="index">
-              <AlbumRelease :release="index" />
-            </div>
+        <div id='carousel' ref="carousel" >
+          <div ref="slide" class="release" v-for="(release, index) in albumReleases" :key="index">
+            <AlbumRelease :release="index" />
           </div>
         </div>
       </div>
@@ -251,7 +249,9 @@ body {
   position: relative;
   display: flex;
   flex-direction: column;
-  flex-grow: 1;
+  height: 60%;
+  align-items: center;
+  max-width: 115em;
 }
 
 header {
@@ -309,7 +309,6 @@ footer {
 
 #slide-buttons {
   position: relative;
-  bottom: 5%;
   display: flex;
   justify-content: center;
 }
@@ -335,9 +334,8 @@ footer {
 #content {
   background: rgba(0, 0, 0, 0.3);
   border-radius: .5em;
-  height: 43vh;
-  width: 70vh;
-  max-width: 130%;
+  height: 100%;
+  width: 100%;
   backdrop-filter: blur(0.5vh);
   overflow: hidden;
   padding: 3%;
@@ -348,13 +346,6 @@ footer {
   display: flex;
   align-items: center;
   position: relative;
-  bottom: 5%;
-}
-
-#carousel-wrapper {
-  width: 100%;
-  height: 100%;
-  position: relative;
 }
 
 .slide-change-icon {
@@ -364,15 +355,15 @@ footer {
 
 #carousel {
   display: flex;
-  position: absolute;
+  position: relative;
   left: 0%;
   transition: left 0.5s ease-out;
-  cursor: default;
+  flex-wrap: nowrap;
+  height: 100%;
 }
 
 #ammokrates-logo {
   position: relative;
-  bottom: 4%;
   height: 15%;
   text-align: center;
 }
@@ -387,6 +378,9 @@ footer {
 
 .release {
   user-select: none;
+  color: white;
+  width: 100%;
+  flex-shrink: 0;
 }
 
 #band-info {
@@ -395,6 +389,7 @@ footer {
   font-family: var(--band-info-font);
   color: #ffe5ca;
   margin: 0 auto;
+  margin-top: 3vh;
 }
 
 .band-member {
@@ -416,40 +411,20 @@ footer {
 
 @media screen and (max-width: 800px) {
   #page-content {
-    width: 100%;
-  }
-}
-
-@media screen and (max-width: 705px) {
-  img.info-section {
-    width: 26vh !important;
-  }
-}
-
-@media screen and (max-width: 630px) {
-  img.info-section {
-    width: 22vh !important;
+    width: 95%;
   }
 }
 
 @media screen and (max-width: 590px) {
-  #content {
-    height: 27vh;
+  #ammokrates-logo img {
+    height: 80%;
   }
-  img.info-section {
-    width: 18vh !important;
-  }
-  div.info-section {
-    width: 24vh !important;
-  }
-  .release {
-    padding-right: 10vh;
+  footer {
+    height: 30%;
   }
 }
 @media screen and (max-width: 545px) {
-  div.info-section {
-    width: 20vh !important;
-  }
+  
 }
 
 </style>

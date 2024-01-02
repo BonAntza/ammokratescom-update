@@ -1,21 +1,21 @@
 <template>
-  <div class="release-wrapper">
-    <h2>{{ releaseData.title }}</h2>
-    <div class="album-info">
-      <img class="info-section" :src="'../images/' + releaseData.imgId + '.jpg'">
-      <div class="info-section">
-        <div class="songs">
-          <div v-for="(song, index) in releaseData.songList" :key="index">
-            {{ index + 1 + ". " + song }}
-            <span class="link-data" v-if="releaseData.linkData && releaseData.linkData[releaseData.imgId]">
-              <a target="_blank" :href="releaseData.linkData[releaseData.imgId]">(Lyric Video <font-awesome-icon class="font-awesome-icon" :icon="['fas', 'arrow-up-right-from-square']" />)</a>
-            </span>
-          </div>
+  <h2>{{ releaseData.title }}</h2>
+  <div class="album-info">
+    <div class="info-section">
+      <img class="info-section-img" :src="'../images/' + releaseData.imgId + '.jpg'">
+    </div>
+    <div class="info-section">
+      <div class="songs">
+        <div v-for="(song, index) in releaseData.songList" :key="index">
+          {{ index + 1 + ". " + song }}
+          <span class="link-data" v-if="releaseData.linkData && releaseData.linkData[releaseData.imgId]">
+            <a target="_blank" :href="releaseData.linkData[releaseData.imgId]">(Lyric Video <font-awesome-icon class="font-awesome-icon" :icon="['fas', 'arrow-up-right-from-square']" />)</a>
+          </span>
         </div>
-        <div class="release-info">
-          Released in {{ releaseData.year }}<br/>
-          Music and lyrics written by Ammokrates
-        </div>
+      </div>
+      <div class="release-info">
+        Released in {{ releaseData.year }}<br/>
+        Music and lyrics written by Ammokrates
       </div>
     </div>
   </div>
@@ -94,22 +94,19 @@ a:hover {
 h2 {
   padding-bottom: 0.7vh;
   margin: 0 0 1vh 0;
-  font-size: 1.8vh;
+  font-size: 2vh;
   font-weight: normal;
 }
-
-.release-wrapper {
-  color: white;
-}
-
 .info-section {
-  width: 33vh;
+  width: 50%;
   margin: 1vh;
-  font-size: 1.3vh;
+  font-size: 1.5vh;
 }
 
-img.info-section {
+.info-section-img {
   box-shadow: 0 0 0.8em #00000096;
+  width: 100%;
+  height: auto;
 }
 
 .album-info {
