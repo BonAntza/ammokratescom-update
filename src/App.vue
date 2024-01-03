@@ -252,6 +252,7 @@ body {
   height: 60%;
   align-items: center;
   max-width: 115em;
+  bottom: 3em;
 }
 
 header {
@@ -351,6 +352,7 @@ footer {
 .slide-change-icon {
   font-size: 6vh;
   margin: 0 0.1vh;
+  z-index: 1;
 }
 
 #carousel {
@@ -410,14 +412,22 @@ footer {
 }
 
 @media screen and (max-width: 800px) {
-  #content-wrapper {
-    width: 95%;
+  #content {
+    border-radius: 0;
   }
 }
 
 @media screen and (max-width: 590px) {
-  #ammokrates-logo img {
+
+  #content-wrapper .slide-change-icon {
+    position: absolute;
+    margin: 0 0.2em;
   }
+
+  #content-wrapper .slide-change-icon:last-child {
+    right: 0;
+  }
+
   footer {
     height: 21%;
     justify-content: flex-start;
@@ -426,8 +436,23 @@ footer {
     height: 12%;
   }
 }
-@media screen and (max-width: 545px) {
-  
+
+@media screen and (max-height: 1000px) {
+  #page-content {
+    max-width: 100em;
+  }
+}
+
+@media screen and (max-height: 870px) {
+  #page-content {
+    max-width: 80em;
+  }
+}
+
+@media screen and (max-height: 690px) {
+  #page-content {
+    max-width: 50em;
+  }
 }
 
 </style>
