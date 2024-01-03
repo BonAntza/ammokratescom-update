@@ -451,7 +451,7 @@ footer {
 
 @media screen and (max-height: 690px) {
   #page-content {
-    max-width: 35em;
+    max-width: 25em;
   }
 }
 
