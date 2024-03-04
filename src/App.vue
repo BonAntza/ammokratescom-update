@@ -47,6 +47,7 @@
 <script>
 import { ref, onMounted, onUnmounted } from 'vue';
 import AlbumRelease from './components/AlbumRelease.vue';
+import './ammostyles.css';
 
 export default {
   name: 'App',
@@ -128,7 +129,3 @@ export default {
   },
 };
 </script>
-
-<style>
-@import './ammostyles.css';
-</style>
