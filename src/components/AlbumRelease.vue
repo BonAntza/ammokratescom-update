@@ -2,7 +2,7 @@
   <h2>{{ releaseData.title }}</h2>
   <div class="album-info">
     <div class="info-section">
-      <img class="info-section-img" :src="'../images/' + releaseData.imgId + '.jpg'">
+      <img class="info-section-img" :src="'../images/' + releaseData.imgId + '.jpg'" :alt="'Album cover for ' + releaseData.title">
     </div>
     <div class="info-section">
       <div class="songs">

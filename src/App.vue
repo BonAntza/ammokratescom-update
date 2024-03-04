@@ -1,9 +1,9 @@
 <template>
   <header>
-    <img id="header-graphic" src="../public/images/header-bar.png">
+    <img id="header-graphic" src="../public/images/header-bar.png" alt="Rock and lava header bar graphic">
   </header>
   <div id="ammokrates-logo">
-    <img src="../public/images/ammokrates-logo.png" alt="Ammokrates Logo">
+    <img src="../public/images/ammokrates-logo.png" alt="Ammokrates Band Logo">
   </div>
   <div id="page-content">
     <div id="slide-buttons">
@@ -39,7 +39,7 @@
       <font-awesome-icon @click="clickSomeLink('instagram')" class="slide-change-icon" :icon="['fab', 'square-instagram']" />
     </div>
     <div id="footer-text">
-      All copyrights by Ammokrates. Web design by Bon Antza SpecOps. Web page icons by <a id="font-awesome-link" href="https://fontawesome.com/license" target="_blank">fontawesome</a>.
+      Contact: ammokrates<font-awesome-icon :icon="['fa', 'at']" />gmail.com. Web design by Bon Antza SpecOps. Web page icons by <a id="font-awesome-link" href="https://fontawesome.com/license" target="_blank">fontawesome</a>.
     </div>
   </footer>
 </template>
@@ -177,11 +177,11 @@ export default {
       const slidesCount = albumReleases.value.length;
       let newSlide;
 
+      // Dragged left, move to next slide.
       if (dragLeft && selectedSlide.value < slidesCount - 1) {
-        // Dragged left, move to next slide
         newSlide = selectedSlide.value + 1;
+      // Dragged right, move to previous slide.
       } else if (!dragLeft && selectedSlide.value > 0) {
-        // Dragged right, move to previous slide
         newSlide = selectedSlide.value - 1;
       }
 
