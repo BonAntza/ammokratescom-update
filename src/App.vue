@@ -10,15 +10,15 @@
       <div class="slide-button" :class="{ 'selected-release': selectedSlide === index }" v-for="(release, index) in albumReleases" :key="index" @click="handleButtonClick(index)">•</div>
     </div>
     <div id="content-wrapper">
-      <font-awesome-icon class="slide-change-icon" :icon="['fas', 'caret-left']" @click="handleCaretClick('left')" />
+      <font-awesome-icon class="slide-change-icon" :icon="['fas', 'caret-left']" @click="() => handleCaretClick('left')" />
       <div id='content'>
-        <div id='carousel' ref="carousel" >
-          <div ref="slide" class="release" v-for="(release, index) in albumReleases" :key="index">
+        <div id='carousel' :ref="setCarouselRef">
+          <div v-for="(release, index) in albumReleases" :key="index" class="release">
             <AlbumRelease :release="index" />
           </div>
         </div>
       </div>
-      <font-awesome-icon class="slide-change-icon" :icon="['fas', 'caret-right']" @click="handleCaretClick('right')" />
+      <font-awesome-icon class="slide-change-icon" :icon="['fas', 'caret-right']" @click="() => handleCaretClick('right')" />
     </div>
     <div id="band-info">
       <div class="band-member">
@@ -26,7 +26,7 @@
         <div class="band-member-duties">Vocals, Bass</div>
       </div>
       <div class="band-member">
-        <div class="band-member-name">Antti Oinonen</div>
+        <div class="band-member-name">AJ Oinonen</div>
         <div class="band-member-duties">Guitars, drums, keyboard</div>
       </div>
     </div>
@@ -46,413 +46,89 @@
 
 <script>
 import { ref, onMounted, onUnmounted } from 'vue';
-import AlbumRelease from './components/AlbumRelease.vue'
-
-/**
- * Turns the carousel from a given slide to another.
- * @param {number} fromSlide - Starting slide.
- * @param {number} toSlide - Target slide.
- */
-function turnCarousel(fromSlide, toSlide, setSelectedSlide) {
-  const releases = document.querySelectorAll('.release');
-  const carousel = document.getElementById('carousel');
-
-  if (releases.length > 0 && carousel) {
-    const releaseWidth = releases[0].getBoundingClientRect().width;
-    const turns = toSlide - fromSlide;
-    const turnsWidth = turns * releaseWidth;
-    const currentLeft = parseInt(carousel.style.left, 10) || 0;
-    const newLeft = currentLeft - turnsWidth;
-
-    setTimeout(() => {
-      carousel.style.left = `${newLeft}px`;
-      setSelectedSlide(toSlide);
-    }, 10);
-  }
-}
+import AlbumRelease from './components/AlbumRelease.vue';
 
 export default {
   name: 'App',
   components: {
     AlbumRelease,
   },
-  mounted() {
-  },
-  methods: {
-    clickSomeLink(some) {
-      let url;
-      switch (some) {
-        case 'spotify':
-          url = 'https://open.spotify.com/artist/1ligbbndQQ73wDO19csaZc';
-          break;
-        case 'youtube':
-          url = 'https://www.youtube.com/channel/UCczprvQL9QMzmz1tsGAoo6g/videos';
-          break;
-        case 'facebook':
-          url = 'https://www.facebook.com/Ammokratesofficial/';
-          break;
-        case 'instagram':
-          url = 'https://www.instagram.com/ammokrates/?hl=en';
-          break;
-        default:
-          break;
-      }
-      window.open(url, '_blank');
-    },
-    /**
-     * Handles button click of the carousel buttons.
-     * @param {number} index - The index the user has clicked on.
-     */
-    handleButtonClick(index) {
-      this.turnCarouselWrapper(this.selectedSlide, index);
-    },
-    /**
-     * Handles caret button click on the carousel (left or right).
-     * @param {string} dir - The direction where the user is navigating in the carousel. 
-     */
-    handleCaretClick(dir) {
-      let nextSlide;
-      let currentSlideIndex;
-      const slidesCount = this.albumReleases.length;
-
-      // Get the index of currentSlide.
-      this.albumReleases.forEach((albumRelease, index) => {
-        if (this.selectedSlide === index) {
-          currentSlideIndex = index;
-          return;
-        }
-      });
-
-      // Sliding the carousel left (but not when the first slide is already selected).
-      if (dir === 'left' && currentSlideIndex !== 0) {
-        nextSlide = currentSlideIndex - 1;
-      // Sliding the carousel right (but not when at the end of the carousel).
-      } else if (dir === 'right' && currentSlideIndex !== (slidesCount-1)) {
-        nextSlide = currentSlideIndex + 1;
-      }
-
-      // Carousel turn is possible.     
-      if (nextSlide !== undefined) {
-        this.turnCarouselWrapper(currentSlideIndex, nextSlide);
-      }
-    },
-    turnCarouselWrapper(fromSlide, toSlide) {
-      turnCarousel(fromSlide, toSlide, (newSlide) => { this.selectedSlide = newSlide});
-    }
-  },
   setup() {
-    const albumReleases = ref([
-      'ammokratic-oath',
-      'legends',
-      'echoes-between-the-stars',
-    ]);
+    const albumReleases = ref(['ammokratic-oath', 'legends', 'echoes-between-the-stars']);
     const selectedSlide = ref(0);
     const carousel = ref(null);
-    let startX, startLeft, endX;
 
-    const startDrag = (event) => {
-      event = event.type.includes('mouse') ? event : event.touches[0];
-      startX = event.clientX;
-      startLeft = parseInt(carousel.value.style.left, 10) || 0;
-
-      document.addEventListener('mousemove', onDrag);
-      document.addEventListener('mouseup', stopDrag);
-      document.addEventListener('touchmove', onDrag);
-      document.addEventListener('touchend', stopDrag);
+    const setCarouselRef = (el) => {
+      carousel.value = el;
     };
 
-    const onDrag = (event) => {
-      event.preventDefault();
-      event = event.type.includes('mouse') ? event : event.touches[0];
-      endX = event.clientX;
+    /**
+     * Opens a new tab with the specified social media link.
+     * @param {string} some - The name of the social media platform.
+     */
+    const clickSomeLink = (some) => {
+      const urls = {
+        spotify: 'https://open.spotify.com/artist/1ligbbndQQ73wDO19csaZc',
+        youtube: 'https://www.youtube.com/channel/UCczprvQL9QMzmz1tsGAoo6g/videos',
+        facebook: 'https://www.facebook.com/Ammokratesofficial/',
+        instagram: 'https://www.instagram.com/ammokrates/?hl=en',
+      };
+      const url = urls[some];
+      if (url) window.open(url, '_blank');
     };
 
-    const stopDrag = () => {
-      document.removeEventListener('mousemove', onDrag);
-      document.removeEventListener('mouseup', stopDrag);
-      document.removeEventListener('touchmove', onDrag);
-      document.removeEventListener('touchend', stopDrag);
+    /**
+     * Handles the click event on the slide buttons.
+     * @param {number} index - The index of the clicked slide.
+     */
+    const handleButtonClick = (index) => {
+      turnCarousel(selectedSlide.value, index);
+    };
 
-      const dragLeft = endX < startX;
-      const slidesCount = albumReleases.value.length;
-      let newSlide;
+    /**
+     * Handles the click event on the caret icons.
+     * @param {string} dir - The direction of the caret click ('left' or 'right').
+     */
+    const handleCaretClick = (dir) => {
+      let nextSlide = dir === 'left' ? Math.max(0, selectedSlide.value - 1) : Math.min(albumReleases.value.length - 1, selectedSlide.value + 1);
+      turnCarousel(selectedSlide.value, nextSlide);
+    };
 
-      // Dragged left, move to next slide.
-      if (dragLeft && selectedSlide.value < slidesCount - 1) {
-        newSlide = selectedSlide.value + 1;
-      // Dragged right, move to previous slide.
-      } else if (!dragLeft && selectedSlide.value > 0) {
-        newSlide = selectedSlide.value - 1;
-      }
+    /**
+     * Turns the carousel to display the specified slide.
+     * @param {number} fromSlide - The index of the current slide.
+     * @param {number} toSlide - The index of the target slide.
+     */
+    const turnCarousel = (fromSlide, toSlide) => {
+      const releases = document.querySelectorAll('.release');
+      const carousel = document.getElementById('carousel');
 
-      if (newSlide !== undefined) {
-        turnCarousel(selectedSlide.value, newSlide, (updatedSlide) => {
-          selectedSlide.value = updatedSlide;
-        });
+      if (releases.length > 0 && carousel) {
+        const releaseWidth = releases[0].getBoundingClientRect().width;
+        const turns = toSlide - fromSlide;
+        const turnsWidth = turns * releaseWidth;
+        const currentLeft = parseInt(carousel.style.left, 10) || 0;
+        const newLeft = currentLeft - turnsWidth;
+
+        setTimeout(() => {
+          carousel.style.left = `${newLeft}px`;
+          selectedSlide.value = toSlide;
+        }, 10);
       }
     };
 
-    onMounted(() => {
-      if (carousel.value) {
-        carousel.value.addEventListener('mousedown', startDrag);
-        carousel.value.addEventListener('touchstart', startDrag);
-      }
-    });
-
-    onUnmounted(() => {
-      if (carousel.value) {
-        carousel.value.removeEventListener('mousedown', startDrag);
-        carousel.value.removeEventListener('touchstart', startDrag);
-      }
-    });
-
-    return { carousel, albumReleases, selectedSlide };
-  }
-}
+    return {
+      albumReleases,
+      selectedSlide,
+      setCarouselRef,
+      clickSomeLink,
+      handleButtonClick,
+      handleCaretClick,
+    };
+  },
+};
 </script>
 
 <style>
-
-:root {
-  --main-font: 'Karla', Helvetica;
-  --band-info-font: 'Karla', sans-serif;
-}
-
-::selection {
-  background: black;
-  color: #aaa;
-}
-
-body {
-  margin: 0;
-  height: 100vh;
-  width: 100vw;
-  background: url('../public/images/bg2.jpg') no-repeat center center/cover black;
-  overflow: hidden;
-  display: flex;
-  font-size: 50%;
-}
-
-#app {
-  font-family: var(--main-font);
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  color: #2c3e50;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  width: 100vw;
-  height: 100vh;
-}
-
-#page-content {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  height: 60%;
-  align-items: center;
-  max-width: 115em;
-  bottom: 3em;
-}
-
-header {
-  width: 100%;
-  height: 20%;
-  display: flex;
-  justify-content: center;
-}
-
-#some-icons {
-  position: relative;
-  bottom: 0.8vh;
-}
-
-#some-icons svg {
-  color: #ffe5ca;
-  font-size: 1.8vh;
-  margin: 0 0.7vh;
-  opacity: 0.9;
-}
-
-#some-icons svg:hover {
-  opacity: 0.4;
-}
-
-footer {
-  font-family: var(--main-font);
-  width: 100%;
-  height: 5%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  opacity: 0.6;
-  backdrop-filter: blur(0.5vh);
-  flex-direction: column;
-}
-
-#footer-text {
-  text-align: center;
-  color: white;
-  font-size: 1.2vh;
-}
-
-#footer-text #font-awesome-link {
-  color: white;
-}
-
-#footer-text #font-awesome-link:hover {
-  text-decoration: none;
-}
-
-#header-graphic {
-  height: 100%;
-}
-
-#slide-buttons {
-  position: relative;
-  display: flex;
-  justify-content: center;
-}
-
-.slide-button, .slide-change-icon {
-  font-size: 4vh;
-  color: #181716;
-  text-shadow: 0em 0em 0.7em black;
-  margin: 0 0.5em;
-  cursor: pointer;
-  transition: opacity 0.3s ease;
-}
-
-.slide-button:hover, .slide-change-icon:hover {
-  opacity: 0.6;
-  transition: opacity 0.3s ease;
-}
-
-.slide-button.selected-release {
-  opacity: 0.6;
-}
-
-#content {
-  background: rgba(0, 0, 0, 0.3);
-  border-radius: .5em;
-  height: 100%;
-  width: 100%;
-  backdrop-filter: blur(0.5vh);
-  overflow: hidden;
-  padding: 3%;
-  box-sizing: border-box;
-}
-
-#content-wrapper {
-  display: flex;
-  align-items: center;
-  position: relative;
-}
-
-.slide-change-icon {
-  font-size: 6vh;
-  margin: 0 0.1vh;
-  z-index: 1;
-}
-
-#carousel {
-  display: flex;
-  position: relative;
-  left: 0%;
-  transition: left 0.5s ease-out;
-  flex-wrap: nowrap;
-  height: 100%;
-}
-
-#ammokrates-logo {
-  position: relative;
-  height: 15%;
-  text-align: center;
-}
-
-#ammokrates-logo img {
-  height: 100%;
-}
-
-.release:not(:last-child) {
-  padding-right: 3vh;
-}
-
-.release {
-  user-select: none;
-  color: white;
-  width: 100%;
-  flex-shrink: 0;
-}
-
-#band-info {
-  display: flex;
-  flex-wrap: wrap;
-  font-family: var(--band-info-font);
-  color: #ffe5ca;
-  margin: 0 auto;
-  margin-top: 3vh;
-}
-
-.band-member {
-  text-align: center;
-  flex: 1;
-  margin: 0 2vh;
-}
-
-.band-member-name {
-  font-size: 2vh;
-  text-wrap: nowrap;
-}
-
-.band-member-duties {
-  margin-top: 0.5vh;
-  text-wrap: nowrap;
-  font-size: 1.2vh;
-}
-
-@media screen and (max-width: 800px) {
-  #content {
-    border-radius: 0;
-  }
-}
-
-@media screen and (max-width: 590px) {
-
-  #content-wrapper .slide-change-icon {
-    position: absolute;
-    margin: 0 0.2em;
-  }
-
-  #content-wrapper .slide-change-icon:last-child {
-    right: 0;
-  }
-
-  footer {
-    height: 21%;
-    justify-content: flex-start;
-  }
-  #ammokrates-logo {
-    height: 12%;
-  }
-}
-
-@media screen and (max-height: 1000px) {
-  #page-content {
-    max-width: 100em;
-  }
-}
-
-@media screen and (max-height: 870px) {
-  #page-content {
-    max-width: 80em;
-  }
-}
-
-@media screen and (max-height: 690px) {
-  #page-content {
-    max-width: 25em;
-  }
-}
-
+@import './ammostyles.css';
 </style>

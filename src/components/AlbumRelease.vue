@@ -22,15 +22,17 @@
 </template>
 
 <script>
+import { computed } from 'vue';
+
 export default {
   name: 'AlbumRelease',
   props: {
     release: Number
   },
-  computed: {
-    releaseData() {
+  setup(props) {
+    const releaseData = computed(() => {
       let albumInfo = {};
-      switch (this.release) {
+      switch (props.release) {
         case 0:
           albumInfo = {
             title: 'Ammokratic Oath',
@@ -73,13 +75,14 @@ export default {
           break;
       }
       return albumInfo;
-    }
-  },
+    });
+
+    return { releaseData };
+  }
 }
 </script>
 
 <style scoped>
-
 a {
   color: rgb(224, 202, 159);
   text-decoration: none;
